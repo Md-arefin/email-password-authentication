@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification } from "firebase/auth";
 import app from '../../firebase/firebase.config';
 import { Link } from 'react-router-dom';
 
@@ -38,6 +38,7 @@ const RegisterRBS = () => {
             .then(result => {
                 const registeredUser = result.user;
                 console.log(registeredUser);
+                sendVerificationEmail(result.user);
                 setError(' ');
                 event.target.reset();
             })
@@ -45,6 +46,17 @@ const RegisterRBS = () => {
                 console.error(error);
                 setError(error.message)
             })
+    }
+
+    const sendVerificationEmail = (user) =>{
+        sendEmailVerification(user)
+        .then(result => {
+            alert("Please verify ur mail")
+        })
+        .catch(error =>{
+            console.error(error);
+            setError(error.message)
+        })
     }
 
     return (
@@ -66,7 +78,6 @@ const RegisterRBS = () => {
                 <Form.Group className="mb-3" controlId="formBasicCheckbox">
                     <Form.Check type="checkbox" label="Accept our terms and conditions" />
                 </Form.Group>
-                <p className='text-danger'>{error}</p>
                 <Button variant="primary" type="submit">
                     Submit
                 </Button>
